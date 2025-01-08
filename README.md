@@ -18,18 +18,14 @@
     ```bash
     cd Project_fullstack
     ```
-3. Установите зависимости:
-    ```bash
-    npm install
+3. Запуска контейнеров в Docker Compos:
+    ```bas
+    docker-compose up --build
     ```
+    
 
-## Использование
-Запустите сервер разработки:
-```bash
-npm start
-```
 
-Откройте браузер и перейдите по адресу `http://localhost:3000`.
+Откройте браузер и перейдите по адресу `http://localhost`.
 
 ## Вклад
 Пожалуйста, создавайте pull requests и issues для предложений и улучшений.
