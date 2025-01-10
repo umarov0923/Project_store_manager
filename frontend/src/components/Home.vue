@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted} from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { API_URL } from '../../src/config';
@@ -67,6 +67,12 @@ export default {
 
         const user = userResponse.data.data[0]; // Данные о текущем пользователе
         const companyId = user.companyId; // ID компании текущего пользователя
+
+        if (!companyId) {
+          // Если у пользователя нет компании, перенаправляем на страницу добавления компании
+          router.push('/create-company');
+          return;
+        }
 
         // Получаем данные о компании
         const companyResponse = await axios.get(`${API_URL}companies`, {
@@ -115,10 +121,8 @@ export default {
             acc[date].totalPurchase += transaction.amount;
           }
 
-
           return acc;
         }, {});
-
 
         // Обновляем статистику по дням
         dailyStats.value = groupedByDate;
@@ -134,9 +138,9 @@ export default {
       fetchCompanyStats();
     });
 
+
     // Функция для форматирования сумм
     const formatSum = (sum: number) => {
-      // Округление до целых чисел и форматирование
       return Math.round(sum).toLocaleString() + ' UZS'; // Добавляем "UZS" в конце
     };
 

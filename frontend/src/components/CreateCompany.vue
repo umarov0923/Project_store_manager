@@ -76,7 +76,7 @@ export default {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         alert('Company created successfully!');
-        router.push('/add-seller');
+        router.replace('/add-seller');
       } catch (err) {
         console.error('Error creating company', err);
         alert('Error creating company');

@@ -16,7 +16,7 @@ const routes = [
   { path: '/', name: 'Home', component: Home, meta:{ title: 'Главная'} },
   { path: '/registration', component: Registration, meta: { hideMenu: true } },
   { path: '/login', component: Login, meta: { hideMenu: true } },
-  { path: '/create-company', component: CreateCompany },
+  { path: '/create-company', component: CreateCompany, meta: {hideMenu: true} },
   { path: '/add-seller', component: AddSeller, },
   { path: '/add-customer', component: AddCustomer },
   { path: '/create-transaction', component: CreateTransaction },

@@ -63,9 +63,8 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
-import { useRouter, useRoute} from 'vue-router';
-import axios from 'axios';
-import { API_URL } from '../config';
+import { useRouter, useRoute } from 'vue-router';
+import { useUserState } from '../composables/useUserState';
 
 // Определяем интерфейс для метаданных маршрута
 declare module 'vue-router' {
@@ -81,19 +80,16 @@ interface MenuItem {
   condition?: boolean;
 }
 
-interface UserData {
-  role: 'owner' | 'seller';
-  companyId: string | null;
-}
-
-// State
+// Router setup
 const router = useRouter();
 const route = useRoute();
+
+// State
 const isSidebarOpen = ref(false);
-const isOwner = ref(false);
-const isSeller = ref(false);
-const hasCompany = ref(true);
 const title = ref('');
+
+// User state from composable
+const { isOwner, isSeller, hasCompany, fetchUserData } = useUserState();
 
 // Methods
 const toggleSidebar = () => {
@@ -113,29 +109,6 @@ const closeSidebar = () => {
 const handleLogout = () => {
   localStorage.removeItem('jwt');
   router.push('/login');
-};
-
-const fetchUserData = async () => {
-  const token = localStorage.getItem('jwt');
-  
-  if (!token) {
-    router.push('/login');
-    return;
-  }
-
-  try {
-    const response = await axios.get<{ data: UserData[] }>(`${API_URL}users/`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    const { role, companyId } = response.data.data[0];
-    isOwner.value = role === 'owner';
-    isSeller.value = role === 'seller';
-    hasCompany.value = companyId != null;
-  } catch (error) {
-    console.error('Ошибка при загрузке данных пользователя:', error);
-    router.push('/login');
-  }
 };
 
 // Menu items
@@ -189,7 +162,14 @@ watch(
   { immediate: true }
 );
 
+// Watch for route changes to update user data
+watch(
+  () => route.path,
+  async () => {
+    await fetchUserData();
+  }
+);
+
 // Initialize
 fetchUserData();
 </script>
-
